@@ -155,8 +155,8 @@ const App = () => {
     {
       id: 1,
       type: 'urgent',
-      lat: 300,
-      lng: 405,
+      lat: 300.634,
+      lng: 405.20,
       title: "Broken Irrigation Pipe",
       description: "Main water line broken near playground",
       category: "Facility Damage",
@@ -172,8 +172,8 @@ const App = () => {
     {
       id: 2,
       type: 'medium',
-      lat: 591,
-      lng: 101.688,
+      lat: 725.834,
+      lng: 50.688,
       title: "Tree Fungus Spotted",
       description: "Fungal growth observed on oak tree trunk",
       category: "Tree Health",
@@ -188,8 +188,8 @@ const App = () => {
     {
       id: 3,
       type: 'event',
-      lat: 1200,
-      lng: 295,
+      lat: 950.80,
+      lng: 284.567,
       title: "Community Tree Planting",
       description: "Monthly planting event this Sunday",
       category: "Event",
@@ -200,8 +200,8 @@ const App = () => {
     {
       id: 4,
       type: 'healthy',
-      lat: 900,
-      lng: 50,
+      lat: 1300.32,
+      lng: 100.12,
       title: "Healthy Mangrove Zone",
       description: "Thriving mangrove ecosystem",
       category: "Green Zone",
