@@ -979,7 +979,12 @@ const App = () => {
             >
               <FontAwesomeIcon icon={faArrowLeft}/>Back
             </button>
-            <h1 className="mr-[3ch] text-xl font-bold text-green-800">Create Account</h1>
+            <h1 className="mr-[3ch] text-xl font-bold text-green-800">{ 
+            authMode ?
+            'Sign In'
+            :
+            'Create Account'
+            }</h1>
             <div className="w-8"></div>
           </div>
         </div>
@@ -1091,10 +1096,12 @@ const App = () => {
                 
                 {
                   authMode ?
-                  null
+                  <div className="text-center text-sm text-green-600 mt-4">
+                    Don't have an account? <button onClick={() => {navigateTo('login')}} className="text-green-700 font-medium">Sign up</button>
+                  </div>
                   :
                   <div className="text-center text-sm text-green-600 mt-4">
-                    Already have an account? <button className="text-green-700 font-medium">Sign in</button>
+                    Already have an account? <button onClick={() => {navigateTo('login', null, 'citizen', true)}} className="text-green-700 font-medium">Sign in</button>
                   </div>
                 }
               </div>
