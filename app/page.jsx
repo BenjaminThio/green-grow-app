@@ -3,7 +3,6 @@ import { useState, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faEye, faEyeSlash, faXmark } from "@fortawesome/free-solid-svg-icons";
 import map from './../public/map.jpg';
-import Image from "next/image";
 
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -69,6 +68,41 @@ const App = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [statusUpdates, setStatusUpdates] = useState({});
+  const mapContainerRef = useRef(null);
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+  const scrollTopRef = useRef(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+
+    // record mouse start positions
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+
+    // record container scroll start
+    scrollLeftRef.current = mapContainerRef.current.scrollLeft;
+    scrollTopRef.current = mapContainerRef.current.scrollTop;
+  };
+
+  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseLeave = () => setIsDragging(false);
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    // movement since start
+    const dx = e.clientX - startXRef.current;
+    const dy = e.clientY - startYRef.current;
+
+    // apply both horizontal and vertical scroll
+    mapContainerRef.current.scrollLeft = scrollLeftRef.current - dx;
+    mapContainerRef.current.scrollTop = scrollTopRef.current - dy;
+  };
 
   const onboardingSlides = [
     {
@@ -2400,8 +2434,32 @@ const App = () => {
           </div>   
         </div>
           
-        <div style={{position: 'relative', width: '100%', marginTop: 'calc(72.79px + 52.8px)', marginBottom: '76.79px'}}>
-          <Image src={map} alt='map' style={{height: '100svh', width: 'auto', maxWidth: 'none', display: 'block'}} priority draggable={false}/>
+        <div
+          ref={mapContainerRef}
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "calc(100vh - (72.79px + 52.8px + 76.79px))",
+            marginTop: "calc(72.79px + 52.8px)",
+            marginBottom: "76.79px",
+            overflow: 'auto',
+            cursor: isDragging ? "grabbing" : "grab",
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+        >
+          <img src={map.src} 
+            alt="map"
+            style={{
+              display: 'block',
+              width: 'auto',
+              height: 'auto',
+              maxWidth: 'none',
+              overflow: 'scroll'
+            }}
+            draggable={false}/>
           {
             mapPins.map((value, index) => {
               // Benjamin Thio
@@ -2417,6 +2475,9 @@ const App = () => {
                 pin = '🔵';
               else
                 pin = '🟣';
+
+              if (activeMapFilter === "reports" && value.timeline === undefined) return null;
+              else if (activeMapFilter === "events" && value.timeline !== undefined) return null;
 
               return <div key={index} style={{position: 'absolute', translate: `${value.lat}px ${value.lng}px`, top: 0, userSelect: 'none'}}>
                 <div className="hover:scale-[1.3] transition:all duration-200" onClick={() => {
